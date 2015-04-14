@@ -10,6 +10,7 @@ public:
   Student(string s, int x);
   void addClass(string add);
   bool getClass(string c);
+  int getTotalC();
   int getEnrolled();
   void add();
   void minus();

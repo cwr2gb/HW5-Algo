@@ -28,6 +28,10 @@ bool Student::getClass(string c){
 int Student::getEnrolled(){
   return enroll;
 }
+//Gets total Classes
+int Student::getTotalC(){
+  return classes.size();
+}
 //Subtracts one from Enrollment total
 void Student::minus(){
   enroll--;

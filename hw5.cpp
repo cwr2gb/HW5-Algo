@@ -15,8 +15,8 @@
 #include <iomanip>
 using namespace std;
 //Prototypes
-
 //Global Variables
+vector<int> sortSizeC;
 
 int main(int argc, char **argv){
   
@@ -50,8 +50,6 @@ int main(int argc, char **argv){
     if(regis == 0 && clases == 0 && numC == 0){
       break;
     }
-    
-    cout << "R: " << regis << " C: " << clases << " N: " << numC << endl;
     
     //Gets Registration requests
     vector<Student> stus;
@@ -96,12 +94,33 @@ int main(int argc, char **argv){
       classes.push_back(add);
       countC--;
     }
-
-    //Handles Putting Students in Classes Initally
-    for(vector<Student>::iterator b = stus.begin(); b != stus.end(); ++b){
+    
+    //Sorts Registration requests to handle Students with the least amount of requests first
+    for(vector<Student>::iterator l = stus.begin(); l != stus.end(); ++l){
+      sortSizeC.push_back(l->getTotalC());
+    }
+    sort(sortSizeC.begin(),sortSizeC.end());
+    
+    //Sorting Loop
+    vector<Student> studentF;
+    for(vector<int>::iterator d = sortSizeC.begin(); d != sortSizeC.end(); ++d){
+      for(vector<Student>::iterator e = stus.begin(); e != stus.end(); ++e){    
+	int count = 0;
+	for(vector<Student>::iterator f = studentF.begin(); f != studentF.end(); ++f){
+	  if(f->getName() == e->getName()){
+	    count++;
+	  }
+	}
+	if(*d == e->getTotalC() && count < 1){
+	  studentF.push_back(*e);
+	}
+      }
+    }
+    
+    //Handles Putting Students in Classes
+    for(vector<Student>::iterator b = studentF.begin(); b != studentF.end(); ++b){
       for(vector<Class>::iterator c = classes.begin(); c !=classes.end(); ++c){
 	if(b->getClass(c->getName())){
-	  cout << b->getName() << " wants class: " << c->getName() << endl;
 	  if(c->canAddStu(b->getName()) && c->getNumStu() != c->getCurrNumStu() && b->getEnrolled() > 0){
 	    c->addStudent(b->getName());
 	    b->minus();
@@ -109,16 +128,12 @@ int main(int argc, char **argv){
 	}
       }
     }
-    for(vector<Class>::iterator a = classes.begin(); a != classes.end(); ++a){
-      cout << a->getName() << " " << a->getNumStu() << " " << a->getCurrNumStu() << endl;
-    }
+    
     //DETERMINES FINAL OUTPUT
     int leftToEnroll = 0;
-    for(vector<Student>::iterator w = stus.begin(); w != stus.end(); ++w){
-      cout << w->getName() << " " << w->getEnrolled() << endl;
+    for(vector<Student>::iterator w = studentF.begin(); w != studentF.end(); ++w){
       leftToEnroll += w->getEnrolled();
     }
-    cout << "Left to Enroll: " << leftToEnroll << endl;
     if(leftToEnroll ==0){
       cout << "Yes" << endl;
     }
@@ -128,7 +143,6 @@ int main(int argc, char **argv){
     
   }
 }
-
 
 
 
